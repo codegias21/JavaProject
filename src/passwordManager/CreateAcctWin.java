@@ -1,13 +1,7 @@
-/**
- * 
- */
 package passwordManager;
 
 import javax.swing.JFrame;
 
-/**
- * 
- */
 public class CreateAcctWin extends JFrame {
 
 	public CreateAcctWin() {
