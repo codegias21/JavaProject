@@ -47,6 +47,7 @@ public class FirstWindow extends JFrame {
 		// Action Listeners
 		createAccountButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dispose();
 				new CreateAcctWin(); //Create Account Window
 			}
 		});
