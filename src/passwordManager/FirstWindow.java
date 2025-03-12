@@ -32,9 +32,11 @@ public class FirstWindow extends JFrame {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFocusable(false);
 		cancelButton.setBounds(30, 320, 100, 30);
+		
 		JButton createAccountButton = new JButton("Create Account");
 		createAccountButton.setFocusable(false);
 		createAccountButton.setBounds(140, 320, 140, 30);
+		
 		JButton loginButton = new JButton("Login");
 		loginButton.setFocusable(false);
 		loginButton.setBounds(290, 320, 80, 30);
@@ -54,7 +56,8 @@ public class FirstWindow extends JFrame {
 
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Login functionality under development");// Account Creation Window
+				dispose();
+				new LoginWindow(); //Login Window
 			}
 		});
 
