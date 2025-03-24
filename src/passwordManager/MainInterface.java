@@ -1,15 +1,23 @@
 package passwordManager;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class MainInterface extends JFrame {
-
+	
+	JTextField descField;
+	JTextField userField;
+	JTextField passField;
+	
     public MainInterface() {
         setTitle("Password Manager");
         setSize(500, 480);
@@ -30,7 +38,7 @@ public class MainInterface extends JFrame {
         descLabel.setBounds(50, 170, 180, 20);
         add(descLabel);
         
-        JTextField descField = new JTextField();
+        descField = new JTextField();
         descField.setBounds(250, 170, 160, 20);
         add(descField);
 
@@ -38,7 +46,7 @@ public class MainInterface extends JFrame {
         userLabel.setBounds(50, 220, 120, 20);
         add(userLabel);
 
-        JTextField userField = new JTextField();
+        userField = new JTextField();
         userField.setBounds(250, 220, 160, 20);
         add(userField);
 
@@ -46,7 +54,7 @@ public class MainInterface extends JFrame {
         passLabel.setBounds(50, 270, 120, 20);
         add(passLabel);
 
-        JPasswordField passField = new JPasswordField();
+        passField = new JPasswordField();
         passField.setBounds(250, 270, 160, 20);
         add(passField);
 
@@ -60,6 +68,7 @@ public class MainInterface extends JFrame {
 
         JButton updateButton = new JButton("Update");
         updateButton.setBounds(200, 400, 100, 20);
+        updateButton.addActionListener(e -> updateRecords());
         add(updateButton);
 
         setVisible(true);
@@ -67,4 +76,55 @@ public class MainInterface extends JFrame {
 
       
     }
+    
+    void updateRecords(){
+    	String description = descField.getText();
+    	String username = userField.getText();
+    	String password = passField.getText();
+    	
+    	if(description.isEmpty() || password.isEmpty() || username.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Description, username or password fields can not be empty! ", "Error",
+					JOptionPane.ERROR_MESSAGE);
+    	}
+    	
+    	if(isDescriptionTaken(description)) {
+    		JOptionPane.showMessageDialog(this,"You can not have duplicate descriptions.",
+					"Duplicate Description", JOptionPane.ERROR_MESSAGE);
+    	}
+    	saveData(description, username, password);
+    		JOptionPane.showMessageDialog(this, "Records has been successfully updated");
+    	
+    		
+    }
+    boolean isDescriptionTaken(String description){
+		try {
+			java.io.File file = new java.io.File("Data.txt");
+			if (!file.exists()) {
+				return false;
+			}
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(",");
+				if (parts.length > 0 && parts[0].equals(description)) {
+					reader.close();
+					return true;
+				}
+			}
+			reader.close();
+			return false;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "Error checking description!", "File Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+}
+    void saveData(String description, String username, String password) {
+		try (FileWriter writer = new FileWriter("Data.txt", true)) {
+			writer.write(description + ',' + username + "," + password + "\n");
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "Error saving account!", "File Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
 }
