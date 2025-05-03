@@ -19,6 +19,7 @@ public class MainInterface extends JFrame {
 	JTextField passField;
 	
     public MainInterface() {
+    	
         setTitle("Password Manager");
         setSize(500, 480);
         setLocationRelativeTo(null);
@@ -35,7 +36,7 @@ public class MainInterface extends JFrame {
 		add(imageLabel);
 
         JLabel descLabel = new JLabel("Enter the Description/Company:");
-        descLabel.setBounds(50, 170, 180, 20);
+        descLabel.setBounds(50, 170, 200, 20);
         add(descLabel);
         
         descField = new JTextField();
@@ -43,7 +44,7 @@ public class MainInterface extends JFrame {
         add(descField);
 
         JLabel userLabel = new JLabel("Enter the User Name:");
-        userLabel.setBounds(50, 220, 120, 20);
+        userLabel.setBounds(50, 220, 150, 20);
         add(userLabel);
 
         userField = new JTextField();
@@ -60,11 +61,14 @@ public class MainInterface extends JFrame {
 
         JButton displayButton = new JButton("Display All");
         displayButton.setBounds(120, 360, 120, 20);
+        displayButton.addActionListener(e -> displayRecords());
         add(displayButton);
 
         JButton searchButton = new JButton("Search");
         searchButton.setBounds(270, 360, 100, 20);
+        searchButton.addActionListener(e -> searchRecords());
         add(searchButton);
+        
 
         JButton updateButton = new JButton("Update");
         updateButton.setBounds(200, 400, 100, 20);
@@ -72,27 +76,27 @@ public class MainInterface extends JFrame {
         add(updateButton);
 
         setVisible(true);
-        
-
-      
+       
     }
-    
+    // Method to update records
     void updateRecords(){
     	String description = descField.getText();
     	String username = userField.getText();
     	String password = passField.getText();
-    	
+    	// Check for empty description, password and user name fields
     	if(description.isEmpty() || password.isEmpty() || username.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Description, username or password fields can not be empty! ", "Error",
 					JOptionPane.ERROR_MESSAGE);
+			return;
     	}
-    	
+    	//Check for description duplication
     	if(isDescriptionTaken(description)) {
     		JOptionPane.showMessageDialog(this,"You can not have duplicate descriptions.",
 					"Duplicate Description", JOptionPane.ERROR_MESSAGE);
-    	}
+    		return;
+    	}//Save data and display success prompt
     	saveData(description, username, password);
-    		JOptionPane.showMessageDialog(this, "Records has been successfully updated");
+    		JOptionPane.showMessageDialog(this, "The data sets for " + description + " has been added.", "Update Success", JOptionPane.INFORMATION_MESSAGE );
     	
     		
     }
@@ -118,7 +122,7 @@ public class MainInterface extends JFrame {
 			return false;
 		}
 		
-}
+}	//Method to save data when Update button is clicked
     void saveData(String description, String username, String password) {
 		try (FileWriter writer = new FileWriter("Data.txt", true)) {
 			writer.write(description + ',' + username + "," + password + "\n");
@@ -127,4 +131,15 @@ public class MainInterface extends JFrame {
 		}
 
 	}
+//Method to display records when Display All is clicked
+void displayRecords() {
+	new DisplayWindow();
 }
+
+void searchRecords() {
+	new SearchWindow();
+}
+
+}
+
+

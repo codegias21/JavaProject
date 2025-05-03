@@ -1,2 +1,9 @@
 Business,Manny,Manny123!
 TD,Manny1,Manny123!
+TD Bank,Manny,Manny123!
+TD Bank,Manny,Manny123!
+CD Banl,Manny,Manny123!
+BD bank,Manny,Manny123!
+Rowan Bank,Manny,Manny123!
+User1,Manny,Password
+Zeus Bank,Manny,Manny123!
