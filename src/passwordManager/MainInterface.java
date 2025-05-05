@@ -1,5 +1,7 @@
 package passwordManager;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -100,27 +102,26 @@ public class MainInterface extends JFrame {
     	
     		
     }
-    boolean isDescriptionTaken(String description){
-		try {
-			java.io.File file = new java.io.File("Data.txt");
-			if (!file.exists()) {
-				return false;
-			}
-			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] parts = line.split(",");
-				if (parts.length > 0 && parts[0].equals(description)) {
-					reader.close();
-					return true;
-				}
-			}
-			reader.close();
-			return false;
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Error checking description!", "File Error", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+    boolean isDescriptionTaken(String description) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Data.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    String decrypted = Encryption.decrypt(line);
+                    String[] parts = decrypted.split(",", 3);
+                    if (parts.length > 0 && parts[0].equalsIgnoreCase(description)) {
+                        return true;
+                    }
+                } catch (Exception e) {
+                    // Skip invalid or corrupt lines
+                    System.err.println("Skipping invalid or corrupt line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error checking description!", "File Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    
 		
 }	//Method to save data when Update button is clicked
     void saveData(String description, String username, String password) {
