@@ -30,7 +30,7 @@ public class MainInterface extends JFrame {
         programLabel.setBounds(100, 10, 300, 20);
         add(programLabel);
         
-        ImageIcon icon = new ImageIcon("C:/Users/manas/Downloads/download1.jpg"); // Replace with your image path
+        ImageIcon icon = new ImageIcon("C:/Users/manas/Downloads/download1.jpg");
 		JLabel imageLabel = new JLabel(icon);
 		imageLabel.setBounds(100, 35, 225, 100); // Adjust position and size
 		add(imageLabel);
@@ -124,13 +124,17 @@ public class MainInterface extends JFrame {
 		
 }	//Method to save data when Update button is clicked
     void saveData(String description, String username, String password) {
-		try (FileWriter writer = new FileWriter("Data.txt", true)) {
-			writer.write(description + ',' + username + "," + password + "\n");
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Error saving account!", "File Error", JOptionPane.ERROR_MESSAGE);
-		}
-
-	}
+        try (FileWriter writer = new FileWriter("Data.txt", true)) {
+            String plainText = description + ',' + username + ',' + password;
+            String encrypted = Encryption.encrypt(plainText);
+            writer.write(encrypted);
+            writer.write(System.lineSeparator()); // More platform-independent than "\n"
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving encrypted account: " + e.getMessage(),
+                    "File Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); // Helpful for debugging during development
+        }
+    }
 //Method to display records when Display All is clicked
 void displayRecords() {
 	new DisplayWindow();
@@ -139,6 +143,7 @@ void displayRecords() {
 void searchRecords() {
 	new SearchWindow();
 }
+
 
 }
 

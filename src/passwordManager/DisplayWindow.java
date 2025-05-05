@@ -39,17 +39,27 @@ public class DisplayWindow extends JFrame {
         File file = new File("Data.txt");
 
         if (!file.exists()) {
-        	  JOptionPane.showMessageDialog(this, "No records found!", "File Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No records found!", "File Error", JOptionPane.ERROR_MESSAGE);
             return data;
         }
-        //Reading data and outputting to Array List
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",", 3);
-                if (parts.length == 3) {
-                    data.add(parts);
+                try {
+                    if (line.trim().isEmpty()) continue; // Skip blank lines
+
+                    String decrypted = Encryption.decrypt(line);
+                    String[] parts = decrypted.split(",", 3); 
+
+                    if (parts.length == 3) {
+                        data.add(parts);
+                    } else {
+                        System.err.println("Skipping line with unexpected format: " + decrypted);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Skipping invalid or corrupt line: " + line);
+                
                 }
             }
         } catch (IOException e) {
@@ -57,5 +67,18 @@ public class DisplayWindow extends JFrame {
         }
 
         return data;
+    }
+    // Method to refresh Display All after deletion of data set
+    public void refreshData() {
+        // Clear existing data
+        model.setRowCount(0);
+
+        // Reload from file
+        ArrayList<String[]> records = readDataFromFile();
+        Collections.sort(records, Comparator.comparing(row -> row[0].toLowerCase()));
+
+        for (String[] row : records) {
+            model.addRow(row);
+        }
     }
 }
